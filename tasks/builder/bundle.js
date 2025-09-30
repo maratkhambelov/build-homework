@@ -18,7 +18,6 @@ import {resolve as customResolve} from "../3/resolve.js";
  * @param {string} entryPath - путь к entry бандлинга
  */
 export function bundle(entryPath) {
-  // const resolvedPath = customResolve(entryPath)
   const resolvedPath = path.resolve(entryPath)
 
   const { result, deps } = concatModule(resolvedPath, {})
@@ -54,22 +53,31 @@ export function bundle(entryPath) {
 }
 
 const concatModule = (resolvedPath, deps) => {
-  const parsedFile = fs.readFileSync(resolvedPath, 'utf-8')
-  const rawRequireModules = searchRequireCalls(parsedFile)
-  const requireModules = rawRequireModules.map((module) => customResolve(module, resolvedPath)) //path.dirname(resolvedPath), module))
-  // const requireModules = rawRequireModules.map((module) => path.resolve(path.dirname(resolvedPath), module))
-  deps[resolvedPath] = Object.assign(
-      deps[resolvedPath] || {},
-      ...rawRequireModules.map((spec, i) => ({ [spec]: requireModules[i] }))
-  )
+    const parsedFile = fs.readFileSync(resolvedPath, 'utf-8')
+    let moduleMeta = {
+        code: parsedFile,
+        path: resolvedPath
+    }
 
-  let result =   {[resolvedPath]: parsedFile}
-  const children = requireModules.map((m) => concatModule(m, deps))
-  if (children.length) {
-    result = Object.assign(result, ...children.map((c) => c.result))
-  }
+    if (path.extname(resolvedPath).toLowerCase() === '.json') {
+        const obj = JSON.parse(moduleMeta.code)
+        moduleMeta.code = `module.exports = ${JSON.stringify(obj)};`
+    }
 
-  return { result, deps }
+    const rawRequireModules = searchRequireCalls(moduleMeta.code)
+    const requireModules = rawRequireModules.map((module) => customResolve(module, resolvedPath))
+    deps[resolvedPath] = Object.assign(
+        deps[resolvedPath] || {},
+        ...rawRequireModules.map((spec, i) => ({ [spec]: requireModules[i] }))
+    )
+
+    let result =   {[resolvedPath]: moduleMeta.code}
+    const children = requireModules.map((m) => concatModule(m, deps))
+    if (children.length) {
+        result = Object.assign(result, ...children.map((c) => c.result))
+    }
+
+    return { result, deps }
 }
 
 
