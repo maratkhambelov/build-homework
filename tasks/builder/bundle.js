@@ -18,11 +18,11 @@ import {resolve as customResolve} from "../3/resolve.js";
  * @param {string} entryPath - путь к entry бандлинга
  */
 export function bundle(entryPath) {
-  const resolvedPath = path.resolve(entryPath)
+    const resolvedPath = path.resolve(entryPath)
 
-  const { result, deps } = concatModule(resolvedPath, {})
+    const { result, deps } = concatModule(resolvedPath, {})
 
-  const setup = `
+    const setup = `
   const modules = {};
   const deps = ${JSON.stringify(deps)};
   
@@ -37,19 +37,20 @@ export function bundle(entryPath) {
   };
   `
 
-  const requiredModules = Object.entries(result).map(([modulePath, codeFromModule]) => {
-    return `
+    // console.log(deps)
+    const requiredModules = Object.entries(result).map(([modulePath, codeFromModule]) => {
+        return `
     modules[${JSON.stringify(modulePath)}] = (require, module, exports) => {
         ${codeFromModule}
     };
     `
-  }).join('\n')
+    }).join('\n')
 
-  return `
+    return {output: `
   ${setup}
   ${requiredModules}
   customRequire(${JSON.stringify(resolvedPath)});
-  `
+  `, allDeps: Object.keys(deps)}
 }
 
 const concatModule = (resolvedPath, deps) => {

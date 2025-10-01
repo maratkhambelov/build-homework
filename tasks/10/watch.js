@@ -1,9 +1,27 @@
+import {watch} from 'chokidar';
+import fg from "fast-glob";
+
 const changedFilesLog = [];
 
 export function getLog() {
   return changedFilesLog;
 }
 
-export async function subscribe() {}
+let watcher
+export async function subscribe() {
 
-export function unsubscribe() {}
+    const entries = await fg(["./src/*.js"], {
+        onlyFiles: true,
+    });
+
+    watcher = watch(entries).on('change', (path) => {
+        changedFilesLog.push(path);
+    });
+
+    return watcher;
+
+}
+
+export function unsubscribe() {
+    return watcher.close();
+}
