@@ -8,8 +8,9 @@ import replace from "@rollup/plugin-replace";
 export default {
   input: './src/index.tsx',
   output: {
-    dir: './dist/rollup/',
-    format: 'esm'
+      dir: './dist/rollup/',
+      format: 'esm',
+      sourcemap: 'hidden',
   },
 
   plugins: [

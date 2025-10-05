@@ -2,6 +2,7 @@ import { Configuration } from "webpack";
 import path from "node:path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
+import { RsdoctorWebpackPlugin } from "@rsdoctor/webpack-plugin";
 
 const config: Configuration = {
   entry: "./src/index.tsx", // path.resolve(import.meta.dirname, "./src/index.tsx"),
@@ -34,13 +35,14 @@ const config: Configuration = {
       },
     ],
   },
-  resolve: {
+    devtool: "hidden-source-map",
+    resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js", ".css"],
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: "./tsconfig.json" ,
-      }),
-    ],
+        plugins: [
+            new TsconfigPathsPlugin({
+                configFile: "./tsconfig.json" ,
+            }),
+        ],
   },
   output: {
     path: path.resolve(import.meta.dirname, `./dist/webpack/`),
@@ -62,6 +64,7 @@ const config: Configuration = {
           </html>
       `,
     }),
+      new RsdoctorWebpackPlugin(),
   ],
 };
 

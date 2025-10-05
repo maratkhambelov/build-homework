@@ -7,6 +7,7 @@ export default defineConfig({
   base: "/vite/",
   plugins: [tsconfigPaths()],
   build: {
-    outDir: path.resolve(import.meta.dirname, `./dist/vite/`),
+      sourcemap: 'hidden',
+      outDir: path.resolve(import.meta.dirname, `./dist/vite/`),
   },
 });

@@ -16,8 +16,6 @@ const config = {
         clean: true,
         publicPath: "/",
     },
-
-
     resolve: {
         extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
         plugins: [new TsconfigPathsPlugin()],
