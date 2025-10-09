@@ -45,8 +45,12 @@ const config: Configuration = {
         ],
   },
   output: {
-    path: path.resolve(import.meta.dirname, `./dist/webpack/`),
-    publicPath: "/webpack/",
+      path: path.resolve(import.meta.dirname, `./dist/webpack/`),
+      publicPath: "/webpack/",
+      filename: "[name]_[contenthash:8].js",       // основной бандл
+      chunkFilename: "[name]_[contenthash:8].js",  // чанки
+      assetModuleFilename: "[name]_[hash:8].[ext]", // ассеты (если появятся)
+      clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -63,8 +67,9 @@ const config: Configuration = {
             </body>
           </html>
       `,
-    }),
-      new RsdoctorWebpackPlugin(),
+    })
+      // ,
+      // new RsdoctorWebpackPlugin(),
   ],
 };
 

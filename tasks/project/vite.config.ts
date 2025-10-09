@@ -9,5 +9,16 @@ export default defineConfig({
   build: {
       sourcemap: 'hidden',
       outDir: path.resolve(import.meta.dirname, `./dist/vite/`),
+      rollupOptions: {
+          output: {
+              // JS
+              entryFileNames: `[name]_[hash].js`,
+              chunkFileNames: `[name]_[hash].js`,
+              // assets (css, images, fonts, etc.)
+              assetFileNames: `[name]_[hash][extname]`,
+          },
+      },
   },
+
+
 });

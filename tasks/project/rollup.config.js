@@ -11,6 +11,9 @@ export default {
       dir: './dist/rollup/',
       format: 'esm',
       sourcemap: 'hidden',
+      entryFileNames: `[name]_[hash].js`,
+      chunkFileNames: `[name]_[hash].js`,
+      assetFileNames: `[name]_[hash][extname]`,
   },
 
   plugins: [

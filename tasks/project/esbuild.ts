@@ -35,7 +35,10 @@ const options: BuildOptions = {
                 },
             ]
         })
-    ]
+    ],
+    entryNames: "[name]_[hash]",
+    chunkNames: "[name]_[hash]",
+    assetNames: "[name]_[hash]",
 };
 
 esbuild.build(options).catch(() => process.exit(1));
