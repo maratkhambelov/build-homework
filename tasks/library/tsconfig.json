@@ -2,9 +2,11 @@
   "compilerOptions": {
     "module": "node18",
     "target": "es2022",
+    "moduleResolution": "Bundler",
     "strict": true,
     "rootDir": "src",
-    "outDir": "lib"
+    "outDir": "lib",
+    "declaration": true,
   },
   "include": ["src"]
 }
