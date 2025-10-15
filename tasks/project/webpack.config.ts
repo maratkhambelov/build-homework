@@ -2,7 +2,6 @@ import { Configuration } from "webpack";
 import path from "node:path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
-import { RsdoctorWebpackPlugin } from "@rsdoctor/webpack-plugin";
 
 const config: Configuration = {
   entry: "./src/index.tsx", // path.resolve(import.meta.dirname, "./src/index.tsx"),
@@ -47,29 +46,42 @@ const config: Configuration = {
   output: {
       path: path.resolve(import.meta.dirname, `./dist/webpack/`),
       publicPath: "/webpack/",
-      filename: "[name]_[contenthash:8].js",       // основной бандл
-      chunkFilename: "[name]_[contenthash:8].js",  // чанки
-      assetModuleFilename: "[name]_[hash:8].[ext]", // ассеты (если появятся)
+      filename: "[name]_[contenthash:8].js",
+      chunkFilename: "[name]_[contenthash:8].js",
+      assetModuleFilename: "[name]_[hash:8].[ext]",
       clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
-      templateContent:`
+        inject: false,
+        templateContent: ({htmlWebpackPlugin, }) => {
+
+            const scripts = htmlWebpackPlugin.files.js
+                .map((src: string) => `<script src="${src}" nonce="{{NONCE_VALUE}}" defer></script>`)
+                .join("\n");
+            const styles = htmlWebpackPlugin.files.css
+                .map((href: string) =>  `<link rel="stylesheet" href="${href}" nonce="{{NONCE_VALUE}}">`)
+                .join("\n");
+
+
+            return  `
           <!DOCTYPE html>
           <html lang="en">
             <head>
               <meta charset="UTF-8" />
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <title>My App</title>
+              ${styles}
             </head>
             <body>
-              <div id="root"></div>
+              <div id="root">
+              ${scripts}
+              </div>
             </body>
           </html>
-      `,
-    })
-      // ,
-      // new RsdoctorWebpackPlugin(),
+      `
+      },
+     })
   ],
 };
 

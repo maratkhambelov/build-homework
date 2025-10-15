@@ -32,10 +32,10 @@ export default {
         publicPath: "/rollup/",
         template: ({files, publicPath}) => {
         const scripts = (files.js || [])
-            .map(({ fileName }) => `<script type="module" src="${publicPath}${fileName}"></script>`)
+            .map(({ fileName }) => `<script  nonce="{{NONCE_VALUE}}" type="module" src="${publicPath}${fileName}"></script>`)
             .join("\n");
         const links = (files.css || [])
-            .map(({ fileName }) => `<link rel="stylesheet" href="${publicPath}${fileName}">`)
+            .map(({ fileName }) => `<link  nonce="{{NONCE_VALUE}}" rel="stylesheet" href="${publicPath}${fileName}">`)
             .join("\n");
 
             return `
